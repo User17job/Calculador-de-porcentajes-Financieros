@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora Financiera</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef2f7;
+      padding: 30px;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.05);
+      padding: 25px;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    .results {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f6f9fc;
+      border-radius: 8px;
+      border: 1px solid #dce3ed;
+    }
+    .category {
+      margin: 8px 0;
+      font-size: 1.1em;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Distribución Financiera Flexible</h2>
+
+    <label for="monto">Monto total:</label>
+    <input type="number" id="monto" placeholder="Ej: 6581" />
+
+    <label for="resta">Restar antes del cálculo (opcional):</label>
+    <input type="number" id="resta" placeholder="Ej: 658" />
+
+    <label>Porcentajes personalizados (%):</label>
+    <input type="number" id="pctNecesidades" placeholder="Necesidades (Ej: 35)" />
+    <input type="number" id="pctDeseos" placeholder="Deseos (Ej: 20)" />
+    <input type="number" id="pctAhorro" placeholder="Ahorro/Inversión (Ej: 35)" />
+    <input type="number" id="pctReinv" placeholder="Reinversión (Ej: 10)" />
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div class="results" id="resultado" style="display:none;">
+      <div><strong>Monto a distribuir: </strong><span id="montoFinal"></span></div>
+      <div class="category">🛒 Necesidades: RD$ <span id="resNecesidades"></span></div>
+      <div class="category">🎁 Deseos: RD$ <span id="resDeseos"></span></div>
+      <div class="category">💰 Ahorro e Inversión: RD$ <span id="resAhorro"></span></div>
+      <div class="category">📚 Reinv. Educación/Negocio: RD$ <span id="resReinv"></span></div>
+    </div>
+
+    <div class="error" id="mensajeError" style="display:none;"></div>
+  </div>
+
+  <script>
+    function calcular() {
+      const monto = parseFloat(document.getElementById('monto').value) || 0;
+      const resta = parseFloat(document.getElementById('resta').value) || 0;
+      const total = monto - resta;
+
+      const pctN = parseFloat(document.getElementById('pctNecesidades').value) || 0;
+      const pctD = parseFloat(document.getElementById('pctDeseos').value) || 0;
+      const pctA = parseFloat(document.getElementById('pctAhorro').value) || 0;
+      const pctR = parseFloat(document.getElementById('pctReinv').value) || 0;
+
+      const sumaPorcentajes = pctN + pctD + pctA + pctR;
+
+      const errorMsg = document.getElementById('mensajeError');
+      const resultado = document.getElementById('resultado');
+
+      if (sumaPorcentajes !== 100) {
+        resultado.style.display = "none";
+        errorMsg.innerText = "⚠️ La suma de los porcentajes debe ser igual a 100%. Actualmente suma " + sumaPorcentajes + "%";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      errorMsg.style.display = "none";
+      document.getElementById('montoFinal').textContent = total.toFixed(2);
+      document.getElementById('resNecesidades').textContent = (total * pctN / 100).toFixed(2);
+      document.getElementById('resDeseos').textContent = (total * pctD / 100).toFixed(2);
+      document.getElementById('resAhorro').textContent = (total * pctA / 100).toFixed(2);
+      document.getElementById('resReinv').textContent = (total * pctR / 100).toFixed(2);
+      resultado.style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
