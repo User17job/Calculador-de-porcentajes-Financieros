@@ -63,6 +63,9 @@
       color: red;
       font-weight: bold;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -70,23 +73,26 @@
   <div class="container">
     <h2>Distribución Financiera Flexible</h2>
 
-    <label for="monto">Monto total:</label>
-    <input type="number" id="monto" placeholder="Ej: 6581" />
+    <div id="inputs">
+      <label for="monto">Monto total:</label>
+      <input type="number" id="monto" placeholder="Ej: 100" />
 
-    <label for="resta">Restar antes del cálculo (opcional):</label>
-    <input type="number" id="resta" placeholder="Ej: 658" />
+      <label>Porcentajes personalizados (%):</label>
+      <input type="number" id="pctNecesidades" placeholder="Necesidades (Ej: 20)" />
+      <input type="number" id="pctCasa" placeholder="Casa (Ej: 30)" />
+      <input type="number" id="pctDeseos" placeholder="Deseos (Ej: 10)" />
+      <input type="number" id="pctAhorro" placeholder="Ahorro/Inversión (Ej: 30)" />
+      <input type="number" id="pctReinv" placeholder="Reinversión (Ej: 10)" />
+    </div>
 
-    <label>Porcentajes personalizados (%):</label>
-    <input type="number" id="pctNecesidades" placeholder="Necesidades (Ej: 35)" />
-    <input type="number" id="pctDeseos" placeholder="Deseos (Ej: 20)" />
-    <input type="number" id="pctAhorro" placeholder="Ahorro/Inversión (Ej: 35)" />
-    <input type="number" id="pctReinv" placeholder="Reinversión (Ej: 10)" />
-
-    <button onclick="calcular()">Calcular</button>
+    <button id="btnCalcular" onclick="calcular()">Calcular</button>
+    <button id="btnResetear" onclick="resetear()" class="hidden">Volver a calcular</button>
 
     <div class="results" id="resultado" style="display:none;">
       <div><strong>Monto a distribuir: </strong><span id="montoFinal"></span></div>
-      <div class="category">🛒 Necesidades: RD$ <span id="resNecesidades"></span></div>
+      <div class="category">✝ Diezmos: RD$ <span id="resta"></span>-</div>
+      <div class="category">🙌 Necesidades: RD$ <span id="resNecesidades"></span></div>
+      <div class="category">🛒 Casa: RD$ <span id="resCasa"></span></div>
       <div class="category">🎁 Deseos: RD$ <span id="resDeseos"></span></div>
       <div class="category">💰 Ahorro e Inversión: RD$ <span id="resAhorro"></span></div>
       <div class="category">📚 Reinv. Educación/Negocio: RD$ <span id="resReinv"></span></div>
@@ -98,15 +104,17 @@
   <script>
     function calcular() {
       const monto = parseFloat(document.getElementById('monto').value) || 0;
-      const resta = parseFloat(document.getElementById('resta').value) || 0;
-      const total = monto - resta;
+      const resta = monto * 0.10;
+      const total = monto - resta ; 
+      document.getElementById('resta').innerText =  resta.toFixed(2);
 
-      const pctN = parseFloat(document.getElementById('pctNecesidades').value) || 0;
-      const pctD = parseFloat(document.getElementById('pctDeseos').value) || 0;
-      const pctA = parseFloat(document.getElementById('pctAhorro').value) || 0;
-      const pctR = parseFloat(document.getElementById('pctReinv').value) || 0;
+      const pctN = parseFloat(document.getElementById('pctNecesidades').value) || 20;
+      const pctC = parseFloat(document.getElementById('pctCasa').value) || 30;
+      const pctD = parseFloat(document.getElementById('pctDeseos').value) || 10;
+      const pctA = parseFloat(document.getElementById('pctAhorro').value) || 30;
+      const pctR = parseFloat(document.getElementById('pctReinv').value) || 10;
 
-      const sumaPorcentajes = pctN + pctD + pctA + pctR;
+      const sumaPorcentajes = pctN + pctC + pctD + pctA + pctR;
 
       const errorMsg = document.getElementById('mensajeError');
       const resultado = document.getElementById('resultado');
@@ -121,10 +129,31 @@
       errorMsg.style.display = "none";
       document.getElementById('montoFinal').textContent = total.toFixed(2);
       document.getElementById('resNecesidades').textContent = (total * pctN / 100).toFixed(2);
+      document.getElementById('resCasa').textContent = (total * pctC / 100).toFixed(2);
       document.getElementById('resDeseos').textContent = (total * pctD / 100).toFixed(2);
       document.getElementById('resAhorro').textContent = (total * pctA / 100).toFixed(2);
       document.getElementById('resReinv').textContent = (total * pctR / 100).toFixed(2);
       resultado.style.display = "block";
+
+      // Ocultar inputs y botón calcular, mostrar botón reset
+      document.getElementById('inputs').classList.add("hidden");
+      document.getElementById('btnCalcular').classList.add("hidden");
+      document.getElementById('btnResetear').classList.remove("hidden");
+    }
+
+    function resetear() {
+      document.getElementById('monto').value = "";
+      document.getElementById('pctNecesidades').value = "";
+      document.getElementById('pctCasa').value = "";
+      document.getElementById('pctDeseos').value = "";
+      document.getElementById('pctAhorro').value = "";
+      document.getElementById('pctReinv').value = "";
+
+      document.getElementById('resultado').style.display = "none";
+      document.getElementById('mensajeError').style.display = "none";
+      document.getElementById('inputs').classList.remove("hidden");
+      document.getElementById('btnCalcular').classList.remove("hidden");
+      document.getElementById('btnResetear').classList.add("hidden");
     }
   </script>
 
